@@ -21,45 +21,40 @@ public class PrincipalRecibeArchivo {
         PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String datos;
-        String datosEntrada;
+        String datosEntrada="";
+        int tamar;
         int bytesRead;
         int current = 0;
         FileOutputStream fos = null;
         BufferedOutputStream bos = null;
         Scanner scanner = new Scanner(System.in);
         while (true) {
+            
             datos = scanner.nextLine();
             escritor.println(datos);
-            byte[] mybytearray = new byte[4096];
+            datosEntrada=lector.readLine();
+            tamar=Integer.parseInt(datosEntrada);
+            System.out.print(datosEntrada);
+            byte[] mybytearray = new byte[tamar];
             InputStream is = socket.getInputStream();
-            System.out.println("aaaaaaaaaaaaaaaaa");
-            fos = new FileOutputStream("C:\\Users\\Admin\\Desktop\\ejemplo5.txt");
+            fos = new FileOutputStream("C:\\Users\\G5\\Desktop\\recibecliente\\"+datos);
             bos = new BufferedOutputStream(fos);
-            System.out.println("aaaaaaaaaaaaaaaaa2");
             bytesRead = is.read(mybytearray, 0, mybytearray.length);
-            System.out.println("aaaaaaaaaaaaaaaaa3");
-            System.out.println(bytesRead+"wwwwwwwww");
             current = bytesRead;
-            System.out.println("aaaaaaaaaaaaaaaaa4");
             do {
-                bytesRead = is.read(mybytearray, 0, (mybytearray.length - current));
+                bytesRead  = is.read(mybytearray, current, (mybytearray.length - current));
                 
-                System.out.println("aaaaaaaaaaaaaaaaa5");
-
                 if (bytesRead >= 0) {
                     current += bytesRead;
                 }
-            } while (bytesRead > -1);
-
+            } while (bytesRead > 0);
             bos.write(mybytearray, 0, current);
             bos.flush();
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            System.out.println("File " + datos
-                    + " downloaded (" + current + " bytes read)");
+            System.out.println("File " + datos + " downloaded (" + current + " bytes read)");
            }
         
-        
-
     }
+    
+    
 }
 
