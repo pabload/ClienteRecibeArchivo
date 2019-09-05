@@ -16,11 +16,10 @@ import java.util.Scanner;
 public class PrincipalRecibeArchivo {
 
     public static void main(String[] args) throws IOException {
-        while (true) {
             System.out.println("Ruta de tu carpeta cliente");
             Scanner scanner = new Scanner(System.in);
-            String RutaCarpetaCliente = scanner.nextLine();
-            File direcion = new File(RutaCarpetaCliente);
+            //String RutaCarpetaCliente = scanner.nextLine();
+            File direcion = new File(new File(".").getCanonicalPath() + "\\Downloads");
             if (direcion.exists()) {
                 System.out.println("existe");
                 Socket socket = new Socket("127.0.0.1", 2500);
@@ -42,12 +41,14 @@ public class PrincipalRecibeArchivo {
                         escritor.println(datos);
                         datosEntrada = lector.readLine();
                         if (!datosEntrada.equals("non")) {
+                            File Archivo =new File(datos);
                             tamar = Integer.parseInt(datosEntrada);
                             System.out.println("TAMAÑO" + tamar);
                             System.out.print(datosEntrada);
                             byte[] mybytearray = new byte[tamar];
                             InputStream is = socket.getInputStream();
-                            fos = new FileOutputStream(direcion + "\\" + datos);
+                            fos = new FileOutputStream(direcion+"\\"+Archivo.getName());
+                            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+datos);
                             bos = new BufferedOutputStream(fos);
                             bytesRead = is.read(mybytearray, 0, mybytearray.length);
                             current = bytesRead;
@@ -72,7 +73,5 @@ public class PrincipalRecibeArchivo {
                 System.out.println("ruta no existente");
             }
         }
-
-    }
 
 }
