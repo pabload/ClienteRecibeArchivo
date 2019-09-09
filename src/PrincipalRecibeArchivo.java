@@ -19,56 +19,6 @@ public class PrincipalRecibeArchivo {
 
     public static void main(String[] args) throws IOException {
         ValidarRutaDescarga(args[0], args[1], args[2]);
-        /*File direcion = new File(new File(".").getCanonicalPath() + "\\Downloads");
-        if (direcion.exists()) {
-            String ip = args[0];
-            int puerto = Integer.valueOf(args[1]);
-            String datos = args[2];
-            Socket socket = new Socket(ip, puerto);
-            PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String datosEntrada = "";
-            int tamar;
-            int bytesRead;
-            int current = 0;
-            FileOutputStream fos = null;
-            BufferedOutputStream bos = null;
-            if (datos.equals("fin")) {
-                escritor.println("fin");
-                //socket.close();
-                System.exit(0);
-            } else {
-                escritor.println(datos);
-                datosEntrada = lector.readLine();
-                if (!datosEntrada.equals("non")) {
-                    File Archivo = new File(datos);
-                    tamar = Integer.parseInt(datosEntrada);
-                    byte[] mybytearray = new byte[tamar];
-                    InputStream is = socket.getInputStream();
-                    fos = new FileOutputStream(direcion + "\\" + Archivo.getName());
-                    bos = new BufferedOutputStream(fos);
-                    bytesRead = is.read(mybytearray, 0, mybytearray.length);
-                    current = bytesRead;
-                    do {
-                        bytesRead = is.read(mybytearray, current, (mybytearray.length - current));
-
-                        if (bytesRead >= 0) {
-                            current += bytesRead;
-                        }
-                    } while (bytesRead > 0);
-                    bos.write(mybytearray, 0, current);
-                    bos.flush();
-                    socket.close();
-                    System.out.println("File " + datos + " downloaded (" + current + " bytes read)");
-                } else {
-                    System.out.println("no existe");
-                    System.exit(0);
-                }
-            }
-
-        } else {
-            System.out.println("ruta no existente");
-        }*/
     }
     public static void ValidarRutaDescarga(String ip , String puerto ,String datos ){
         try {
