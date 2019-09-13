@@ -19,87 +19,39 @@ public class PrincipalRecibeArchivo {
 
     public static void main(String[] args) throws IOException {
         ValidarRutaDescarga(args[0], args[1], args[2]);
-        /*File direcion = new File(new File(".").getCanonicalPath() + "\\Downloads");
-        if (direcion.exists()) {
-            String ip = args[0];
-            int puerto = Integer.valueOf(args[1]);
-            String datos = args[2];
-            Socket socket = new Socket(ip, puerto);
-            PrintWriter escritor = new PrintWriter(socket.getOutputStream(), true);
-            BufferedReader lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            String datosEntrada = "";
-            int tamar;
-            int bytesRead;
-            int current = 0;
-            FileOutputStream fos = null;
-            BufferedOutputStream bos = null;
-            if (datos.equals("fin")) {
-                escritor.println("fin");
-                //socket.close();
-                System.exit(0);
-            } else {
-                escritor.println(datos);
-                datosEntrada = lector.readLine();
-                if (!datosEntrada.equals("non")) {
-                    File Archivo = new File(datos);
-                    tamar = Integer.parseInt(datosEntrada);
-                    byte[] mybytearray = new byte[tamar];
-                    InputStream is = socket.getInputStream();
-                    fos = new FileOutputStream(direcion + "\\" + Archivo.getName());
-                    bos = new BufferedOutputStream(fos);
-                    bytesRead = is.read(mybytearray, 0, mybytearray.length);
-                    current = bytesRead;
-                    do {
-                        bytesRead = is.read(mybytearray, current, (mybytearray.length - current));
-
-                        if (bytesRead >= 0) {
-                            current += bytesRead;
-                        }
-                    } while (bytesRead > 0);
-                    bos.write(mybytearray, 0, current);
-                    bos.flush();
-                    socket.close();
-                    System.out.println("File " + datos + " downloaded (" + current + " bytes read)");
-                } else {
-                    System.out.println("no existe");
-                    System.exit(0);
-                }
-            }
-
-        } else {
-            System.out.println("ruta no existente");
-        }*/
     }
-    public static void ValidarRutaDescarga(String ip , String puerto ,String datos ){
+
+    public static void ValidarRutaDescarga(String ip, String puerto, String datos) {
         try {
             File direcion = new File(new File(".").getCanonicalPath() + "\\Downloads");
             EnviarArchivo(direcion, ip, Integer.parseInt(puerto), datos);
         } catch (IOException ex) {
-            System.out.println("Error en la ruta descarga"+ ex);
+            System.out.println("Error en la ruta descarga" + ex);
         }
     }
-    public static void EnviarArchivo(File direcion,String ip , int puerto ,String datos ){
-         if (direcion.exists()) {
+
+    public static void EnviarArchivo(File direcion, String ip, int puerto, String datos) {
+        if (direcion.exists()) {
             Socket socket = null;
-             try {
-                 socket = new Socket(ip, puerto);
-             } catch (IOException ex) {
-                 System.out.println("Error al crear socket "+ex);
-             }
+            try {
+                socket = new Socket(ip, puerto);
+            } catch (IOException ex) {
+                System.out.println("Error al crear socket " + ex);
+            }
             PrintWriter escritor = null;
-             try {
-                 escritor = new PrintWriter(socket.getOutputStream(), true);
-             } catch (IOException ex) {
-                 System.out.println("Error al crear escritor "+ex);
-             }
+            try {
+                escritor = new PrintWriter(socket.getOutputStream(), true);
+            } catch (IOException ex) {
+                System.out.println("Error al crear escritor " + ex);
+            }
             BufferedReader lector = null;
-             try {
-                 lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             } catch (IOException ex) {
-                 System.out.println("Error al crear Lector "+ex);
-             }
+            try {
+                lector = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            } catch (IOException ex) {
+                System.out.println("Error al crear Lector " + ex);
+            }
             String datosEntrada = "";
-            int tamar;
+            long tamar;
             int bytesRead;
             int current = 0;
             FileOutputStream fos = null;
@@ -113,31 +65,48 @@ public class PrincipalRecibeArchivo {
                 try {
                     datosEntrada = lector.readLine();
                 } catch (IOException ex) {
-                    System.out.println("Error al leer"+ ex);
+                    System.out.println("Error al leer" + ex);
                 }
                 if (!datosEntrada.equals("non")) {
                     try {
-                    File Archivo = new File(datos);
-                    tamar = Integer.parseInt(datosEntrada);
-                    byte[] mybytearray = new byte[tamar];
-                    InputStream is = socket.getInputStream();
-                    fos = new FileOutputStream(direcion + "\\" + Archivo.getName());
-                    bos = new BufferedOutputStream(fos);
-                    bytesRead = is.read(mybytearray, 0, mybytearray.length);
-                    current = bytesRead;
-                    do {
-                        bytesRead = is.read(mybytearray, current, (mybytearray.length - current));
+                        File Archivo = new File(datos);
+                        tamar = Long.parseLong(datosEntrada);
+                        InputStream is = socket.getInputStream();
+                        fos = new FileOutputStream(direcion + "\\" + Archivo.getName());
+                        bos = new BufferedOutputStream(fos);
+                        long count;
+                        long c = 0;
+                        byte[] buffer = null;
+                        if (tamar > 100000000) {
 
-                        if (bytesRead >= 0) {
-                            current += bytesRead;
+                            buffer = new byte[100000000];
+                        } else {
+                            if (tamar < 10) {
+                                buffer = new byte[(int) tamar];
+                            } else {
+                                if (tamar <= 100000000) {
+
+                                    buffer = new byte[(int) tamar / 10];
+                                }
+
+                            }
                         }
-                    } while (bytesRead > 0);
-                    bos.write(mybytearray, 0, current);
-                    bos.flush();
-                    socket.close();
-                    System.out.println("File " + datos + " downloaded (" + current + " bytes read)"); 
+                        while ((count = is.read(buffer)) > 0) {
+                            c = c + count;
+                            fos.write(buffer, 0, (int) count);
+                            //System.out.println("llego a"+c);
+                            System.out.print("Espere...." + " \r");
+                        }
+                        if (tamar == c) {
+                            System.out.print("Descarga completada ");
+                        } else {
+                            System.out.print("Error en la descarga intente de nuevo");
+                        }
+                        fos.close();
+                        fos.flush();
+                        socket.close();
                     } catch (Exception e) {
-                        System.out.println("Error al recibir mensaje"+ e);
+                        System.out.println("Error al recibir mensaje" + e);
                     }
                 } else {
                     System.out.println("no existe");
